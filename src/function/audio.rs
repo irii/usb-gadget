@@ -9,7 +9,7 @@
 //! use usb_gadget::{default_udc, Class, Config, Gadget, Id, Strings};
 //!
 //! // capture: 8 ch, 48000 Hz, 24 bit, playback: 2 ch, 48000 Hz, 16 bit
-//! let (audio, func) = Uac2::new(Channel::new(0b1111_1111, 48000, 24 / 8), Channel::new(0b11, 48000, 16 / 8));
+//! let (audio, func) = Uac2::new(Channel::new(0b1111_1111, vec![48000], 24 / 8), Channel::new(0b11, vec![48000], 16 / 8));
 //!
 //! let udc = default_udc().expect("cannot get UDC");
 //! let reg =
