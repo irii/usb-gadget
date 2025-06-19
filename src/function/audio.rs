@@ -46,8 +46,8 @@ pub struct Channel {
     /// used to specify the audio channels that are present in the audio stream. For example, a
     /// stereo stream would have a mask of 0x3 (channel 1 and channel 2).
     pub channel_mask: Option<u32>,
-    /// Audio sample rate (Hz)
-    pub sample_rate: Option<u32>,
+    /// Supported audio sample rates (Hz)
+    pub sample_rates: Option<Vec<u32>>,
     /// Audio sample size (bytes) so 2 bytes per sample (16 bit) would be 2.
     pub sample_size: Option<u32>,
 }
@@ -55,8 +55,8 @@ pub struct Channel {
 impl Channel {
     /// Creates a new audio channel with the specified channel mask, sample rate (Hz), and sample
     /// size (bytes).
-    pub fn new(channel_mask: u32, sample_rate: u32, sample_size: u32) -> Self {
-        Self { channel_mask: Some(channel_mask), sample_rate: Some(sample_rate), sample_size: Some(sample_size) }
+    pub fn new(channel_mask: u32, sample_rates: Vec<u32>, sample_size: u32) -> Self {
+        Self { channel_mask: Some(channel_mask), sample_rates: Some(sample_rates), sample_size: Some(sample_size) }
     }
 }
 
@@ -164,8 +164,8 @@ impl Function for Uac2Function {
         if let Some(channel_mask) = self.builder.capture.channel.channel_mask {
             self.dir.write("c_chmask", channel_mask.to_string())?;
         }
-        if let Some(sample_rate) = self.builder.capture.channel.sample_rate {
-            self.dir.write("c_srate", sample_rate.to_string())?;
+        if let Some(sample_rates) = &self.builder.capture.channel.sample_rates {
+            self.dir.write("c_srate", sample_rates.iter().map(|s| s.to_string()).collect::<Vec<String>>().join(","))?;
         }
         if let Some(sample_size) = self.builder.capture.channel.sample_size {
             self.dir.write("c_ssize", sample_size.to_string())?;
@@ -211,8 +211,8 @@ impl Function for Uac2Function {
         if let Some(channel_mask) = self.builder.playback.channel.channel_mask {
             self.dir.write("p_chmask", channel_mask.to_string())?;
         }
-        if let Some(sample_rate) = self.builder.playback.channel.sample_rate {
-            self.dir.write("p_srate", sample_rate.to_string())?;
+        if let Some(sample_rates) = &self.builder.playback.channel.sample_rates {
+            self.dir.write("p_srate", sample_rates.iter().map(|s| s.to_string()).collect::<Vec<String>>().join(","))?;
         }
         if let Some(sample_size) = self.builder.playback.channel.sample_size {
             self.dir.write("p_ssize", sample_size.to_string())?;
